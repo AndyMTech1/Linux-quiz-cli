@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCORE=0
-TOTAL=5
+TOTAL=8
 
 echo "=========================================="
 echo "   LPI Linux Essentials Terminal Quiz"
@@ -63,9 +63,39 @@ else
 fi
 echo ""
 
+# Question 6
+echo "6) Which command and flag copies an ENTIRE directory and everything inside it?"
+read -p "Your answer: " ans6
+if [[ "$ans6" == "cp -r" || "$ans6" == "cp -R" ]]; then
+    echo "Correct!"
+    ((SCORE++))
+else
+    echo "Incorrect. The answer is: cp -r"
+fi
+echo ""
+
+# Question 7
+echo "7) Which command is used to rename a file in Linux?"
+read -p "Your answer: " ans7
+if [[ "$ans7" == "mv" ]]; then
+    echo "Correct!"
+    ((SCORE++))
+else
+    echo "Incorrect. The answer is: mv"
+fi
+echo ""
+
+# Question 8
+echo "8) Which command creates a brand-new empty file?"
+read -p "Your answer: " ans8
+if [[ "$ans8" == "touch" ]]; then
+    echo "Correct!"
+    ((SCORE++))
+else
+    echo "Incorrect. The answer is: touch"
+fi
+echo ""
+
 echo "=========================================="
 echo "   Final Score: $SCORE / $TOTAL"
 echo "=========================================="
-
-
-
