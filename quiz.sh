@@ -1,134 +1,79 @@
 #!/bin/bash
 
+# Arcade Colors
+GREEN='\e[1;32m'
+RED='\e[1;31m'
+CYAN='\e[1;36m'
+YELLOW='\e[1;33m'
+MAGENTA='\e[1;35m'
+RESET='\e[0m'
+
 SCORE=0
+STREAK=0
+MAX_STREAK=0
 TOTAL=11
+HIGHSCORE_FILE="$HOME/.quiz_highscore"
 
-echo "=========================================="
-echo "   LPI Linux Essentials Terminal Quiz"
-echo "=========================================="
-echo ""
-
-# Question 1
-echo "1) Which command prints your current working directory path?"
-read -p "Your answer: " ans1
-if [[ "$ans1" == "pwd" ]]; then
-    echo "Correct!"
-    ((SCORE++))
+# Load existing high score (or default to 0)
+if [[ -f "$HIGHSCORE_FILE" ]]; then
+    HIGHSCORE=$(cat "$HIGHSCORE_FILE")
 else
-    echo "Incorrect. The answer is: pwd"
+    HIGHSCORE=0
 fi
+
+# Helper function to ask a question and track streaks
+ask_question() {
+    local q_num="$1"
+    local question="$2"
+    local ans_primary="$3"
+    local ans_alt="$4"
+
+    echo -e "${CYAN}${q_num}) ${question}${RESET}"
+    read -p "Your answer: " user_ans
+
+    if [[ "$user_ans" == "$ans_primary" || ( -n "$ans_alt" && "$user_ans" == "$ans_alt" ) ]]; then
+        ((SCORE++))
+        ((STREAK++))
+        if (( STREAK > MAX_STREAK )); then
+            MAX_STREAK=$STREAK
+        fi
+        if (( STREAK >= 3 )); then
+            echo -e "${GREEN}[+] CORRECT!${RESET} ${YELLOW}>> ${STREAK}x COMBO STREAK! <<${RESET}"
+        else
+            echo -e "${GREEN}[+] CORRECT!${RESET} (Streak: ${STREAK})"
+        fi
+    else
+        STREAK=0
+        echo -e "${RED}[x] INCORRECT.${RESET} Answer: ${YELLOW}${ans_primary}${RESET} (Streak reset)"
+    fi
+    echo ""
+}
+
+clear
+echo -e "${MAGENTA}==========================================${RESET}"
+echo -e "${YELLOW}     LPI LINUX ARCADE TERMINAL QUIZ${RESET}"
+echo -e "${CYAN}     All-Time High Score: ${HIGHSCORE} / ${TOTAL}${RESET}"
+echo -e "${MAGENTA}==========================================${RESET}"
 echo ""
 
-# Question 2
-echo "2) Which directory stores system-wide configuration files?"
-read -p "Your answer: " ans2
-if [[ "$ans2" == "/etc" || "$ans2" == "etc" ]]; then
-    echo "Correct!"
-    ((SCORE++))
-else
-    echo "Incorrect. The answer is: /etc"
-fi
-echo ""
+ask_question "1" "Which command prints your current working directory path?" "pwd" ""
+ask_question "2" "Which directory stores system-wide configuration files?" "/etc" "etc"
+ask_question "3" "Which directory stores system log files (variable data)?" "/var/log" "/var"
+ask_question "4" "Which command prints ONLY your exact kernel release version?" "uname -r" ""
+ask_question "5" "Which command lists ALL files in detail, including hidden files?" "ls -la" "ls -al"
+ask_question "6" "Which command and flag copies an ENTIRE directory and everything inside it?" "cp -r" "cp -R"
+ask_question "7" "Which command is used to rename a file in Linux?" "mv" ""
+ask_question "8" "Which command creates a brand-new empty file?" "touch" ""
+ask_question "9" "Which command shows ONLY the last 10 lines (bottom) of a file?" "tail" ""
+ask_question "10" "Which command and flag searches inside a file while ignoring uppercase/lowercase?" "grep -i" ""
+ask_question "11" "Which command dumps an entire short text file onto your screen at once?" "cat" ""
 
-# Question 3
-echo "3) Which directory stores system log files (variable data)?"
-read -p "Your answer: " ans3
-if [[ "$ans3" == "/var" || "$ans3" == "/var/log" ]]; then
-    echo "Correct!"
-    ((SCORE++))
-else
-    echo "Incorrect. The answer is: /var or /var/log"
-fi
-echo ""
+echo -e "${MAGENTA}==========================================${RESET}"
+echo -e "${CYAN}   Final Score : ${YELLOW}${SCORE} / ${TOTAL}${RESET}"
+echo -e "${CYAN}   Best Streak : ${YELLOW}${MAX_STREAK} in a row${RESET}"
 
-# Question 4
-echo "4) Which command prints ONLY your exact kernel release version?"
-read -p "Your answer: " ans4
-if [[ "$ans4" == "uname -r" ]]; then
-    echo "Correct!"
-    ((SCORE++))
-else
-    echo "Incorrect. The answer is: uname -r"
+if (( SCORE > HIGHSCORE )); then
+    echo "$SCORE" > "$HIGHSCORE_FILE"
+    echo -e "${GREEN}   [***] NEW ALL-TIME HIGH SCORE! [***]${RESET}"
 fi
-echo ""
-
-# Question 5
-echo "5) Which command lists ALL files in detail, including hidden files?"
-read -p "Your answer: " ans5
-if [[ "$ans5" == "ls -la" || "$ans5" == "ls -al" ]]; then
-    echo "Correct!"
-    ((SCORE++))
-else
-    echo "Incorrect. The answer is: ls -la"
-fi
-echo ""
-
-# Question 6
-echo "6) Which command and flag copies an ENTIRE directory and everything inside it?"
-read -p "Your answer: " ans6
-if [[ "$ans6" == "cp -r" || "$ans6" == "cp -R" ]]; then
-    echo "Correct!"
-    ((SCORE++))
-else
-    echo "Incorrect. The answer is: cp -r"
-fi
-echo ""
-
-# Question 7
-echo "7) Which command is used to rename a file in Linux?"
-read -p "Your answer: " ans7
-if [[ "$ans7" == "mv" ]]; then
-    echo "Correct!"
-    ((SCORE++))
-else
-    echo "Incorrect. The answer is: mv"
-fi
-echo ""
-
-# Question 8
-echo "8) Which command creates a brand-new empty file?"
-read -p "Your answer: " ans8
-if [[ "$ans8" == "touch" ]]; then
-    echo "Correct!"
-    ((SCORE++))
-else
-    echo "Incorrect. The answer is: touch"
-fi
-echo ""
-
-# Question 9
-echo "9) Which command shows ONLY the last 10 lines (bottom) of a file?"
-read -p "Your answer: " ans9
-if [[ "$ans9" == "tail" ]]; then
-    echo "Correct!"
-    ((SCORE++))
-else
-    echo "Incorrect. The answer is: tail"
-fi
-echo ""
-
-# Question 10
-echo "10) Which command and flag searches inside a file while ignoring uppercase/lowercase?"
-read -p "Your answer: " ans10
-if [[ "$ans10" == "grep -i" ]]; then
-    echo "Correct!"
-    ((SCORE++))
-else
-    echo "Incorrect. The answer is: grep -i"
-fi
-echo ""
-
-# Question 11
-echo "11) Which command dumps an entire short text file onto your screen at once?"
-read -p "Your answer: " ans11
-if [[ "$ans11" == "cat" ]]; then
-    echo "Correct!"
-    ((SCORE++))
-else
-    echo "Incorrect. The answer is: cat"
-fi
-echo ""
-
-echo "=========================================="
-echo "   Final Score: $SCORE / $TOTAL"
-echo "=========================================="
+echo -e "${MAGENTA}==========================================${RESET}"
