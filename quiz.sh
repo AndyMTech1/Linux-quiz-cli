@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCORE=0
-TOTAL=8
+TOTAL=11
 
 echo "=========================================="
 echo "   LPI Linux Essentials Terminal Quiz"
@@ -93,6 +93,39 @@ if [[ "$ans8" == "touch" ]]; then
     ((SCORE++))
 else
     echo "Incorrect. The answer is: touch"
+fi
+echo ""
+
+# Question 9
+echo "9) Which command shows ONLY the last 10 lines (bottom) of a file?"
+read -p "Your answer: " ans9
+if [[ "$ans9" == "tail" ]]; then
+    echo "Correct!"
+    ((SCORE++))
+else
+    echo "Incorrect. The answer is: tail"
+fi
+echo ""
+
+# Question 10
+echo "10) Which command and flag searches inside a file while ignoring uppercase/lowercase?"
+read -p "Your answer: " ans10
+if [[ "$ans10" == "grep -i" ]]; then
+    echo "Correct!"
+    ((SCORE++))
+else
+    echo "Incorrect. The answer is: grep -i"
+fi
+echo ""
+
+# Question 11
+echo "11) Which command dumps an entire short text file onto your screen at once?"
+read -p "Your answer: " ans11
+if [[ "$ans11" == "cat" ]]; then
+    echo "Correct!"
+    ((SCORE++))
+else
+    echo "Incorrect. The answer is: cat"
 fi
 echo ""
 
